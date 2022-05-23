@@ -406,8 +406,10 @@ section {
       .col-6 {
         display: flex;
         justify-content: center;
-        .card {
+        a {
           margin-bottom: 30px;
+        }
+        .card {
           width: 190px;
           height: 190px;
           small {
@@ -428,15 +430,10 @@ section {
       border: 1px solid #fff;
       width: 155px;
       height: 155px;
-      // transition: all 0.3s;
-      // box-shadow: 0 0.5rem 1rem rgba(10, 10, 10, 0.15);
       cursor: pointer;
       &:first-child {
         margin-left: 0;
       }
-      // &:hover {
-      //   box-shadow: 0 0.25rem 0.5rem rgba(10, 10, 10, 0.15);
-      // }
       small {
         padding-top: 10px;
         font-size: 13px;

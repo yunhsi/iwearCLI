@@ -38,6 +38,9 @@ select:focus,
 a {
   text-decoration: none !important;
 }
+select {
+  background: #fff;
+}
 
 body,
 html {
@@ -140,12 +143,18 @@ html {
       left: 10px;
       top: 50%;
       transform: translateY(-50%);
+      @include pad_pro {
+        display: none;
+      }
     }
     select {
       border: none;
       border-bottom: 1px solid #aaa;
       padding: 0.25rem 0;
       padding-left: 40px;
+      @include pad_pro {
+        border: none;
+      }
     }
   }
 }

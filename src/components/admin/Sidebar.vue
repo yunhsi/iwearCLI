@@ -10,23 +10,38 @@
         </h6>
         <ul class="nav flex-column mb-2 small">
           <li class="nav-item">
-            <router-link to="/admin/products" class="nav-link">
+            <router-link
+              to="/admin/products"
+              class="nav-link"
+              @click.prevent="closeMenu"
+            >
               <i class="fas fa-box-open"></i>
               商品管理
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/admin/orders" class="nav-link"
+            <router-link
+              to="/admin/orders"
+              class="nav-link"
+              @click.prevent="closeMenu"
               ><i class="fas fa-clipboard-list px-1"></i> 訂單管理
             </router-link>
           </li>
           <li class="nav-item pb-3">
-            <router-link to="/admin/coupons" class="nav-link"
+            <router-link
+              to="/admin/coupons"
+              class="nav-link"
+              @click.prevent="closeMenu"
               ><i class="fas fa-ticket-alt"></i> 優惠券管理
             </router-link>
           </li>
           <li class="nav-item border-top pt-2 small">
-            <a href="/" target="_blank" class="nav-link text-muted">
+            <a
+              href="/"
+              target="_blank"
+              class="nav-link text-muted"
+              @click.prevent="closeMenu"
+            >
               查看前台 <i class="fas fa-external-link"></i>
             </a>
           </li>
@@ -73,6 +88,11 @@ export default {
   computed: {
     isMenuOpen() {
       return this.$store.state.isMenuOpen;
+    },
+  },
+  methods: {
+    closeMenu() {
+      this.$store.commit("toggleMenu");
     },
   },
 };
