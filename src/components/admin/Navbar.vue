@@ -8,7 +8,7 @@
       <router-link to="/admin/products" class="navbar-brand ps-2">
         <i class="fa-solid fa-glasses pe-2"></i>!wear
       </router-link>
-      <a href="#" class="menu-btn" @click.prevent="openMenu">
+      <a href="javascript:;" class="menu-btn" @click.prevent="openMenu">
         <i class="fas fa-bars text-white"></i>
       </a>
     </div>
@@ -23,7 +23,7 @@
     </div>
     <ul class="navbar-nav px-3">
       <li class="nav-item text-nowrap">
-        <a class="nav-link" href="#" @click.prevent="logout">登出</a>
+        <a class="nav-link" href="javascript:;" @click.prevent="logout">登出</a>
       </li>
     </ul>
   </nav>

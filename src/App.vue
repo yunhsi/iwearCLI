@@ -40,6 +40,8 @@ a {
 }
 select {
   background: #fff;
+  color: #000;
+  border-radius: 0;
 }
 
 body,
@@ -152,9 +154,6 @@ html {
       border-bottom: 1px solid #aaa;
       padding: 0.25rem 0;
       padding-left: 40px;
-      @include pad_pro {
-        border: none;
-      }
     }
   }
 }

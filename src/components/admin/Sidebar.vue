@@ -2,50 +2,59 @@
   <!-- 手機版 -->
   <Transition v-show="isMenuOpen" name="slide">
     <nav class="col-md-2 bg-light sidebar">
-      <div class="sidebar-sticky">
-        <h6
-          class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
+      <div
+        class="sidebar-sticky d-flex flex-column justify-content-between pb-5"
+      >
+        <div>
+          <h6
+            class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
+          >
+            <span>後台管理</span>
+          </h6>
+          <ul class="nav flex-column mb-2 small">
+            <li class="nav-item">
+              <router-link
+                to="/admin/products"
+                class="nav-link"
+                @click.prevent="closeMenu"
+              >
+                <i class="fas fa-box-open"></i>
+                商品管理
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link
+                to="/admin/orders"
+                class="nav-link"
+                @click.prevent="closeMenu"
+                ><i class="fas fa-clipboard-list px-1"></i> 訂單管理
+              </router-link>
+            </li>
+            <li class="nav-item pb-3">
+              <router-link
+                to="/admin/coupons"
+                class="nav-link"
+                @click.prevent="closeMenu"
+                ><i class="fas fa-ticket-alt"></i> 優惠券管理
+              </router-link>
+            </li>
+            <li class="nav-item border-top pt-2 small">
+              <a
+                href="javascript:;"
+                class="nav-link text-muted"
+                @click.prevent="openAnother"
+              >
+                查看前台 <i class="fas fa-external-link"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <a
+          href="javascript:;"
+          class="nav-link btn btn-sm btn-dark text-white mx-3 mb-3"
+          @click.prevent="logout"
+          >登出</a
         >
-          <span>後台管理</span>
-        </h6>
-        <ul class="nav flex-column mb-2 small">
-          <li class="nav-item">
-            <router-link
-              to="/admin/products"
-              class="nav-link"
-              @click.prevent="closeMenu"
-            >
-              <i class="fas fa-box-open"></i>
-              商品管理
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link
-              to="/admin/orders"
-              class="nav-link"
-              @click.prevent="closeMenu"
-              ><i class="fas fa-clipboard-list px-1"></i> 訂單管理
-            </router-link>
-          </li>
-          <li class="nav-item pb-3">
-            <router-link
-              to="/admin/coupons"
-              class="nav-link"
-              @click.prevent="closeMenu"
-              ><i class="fas fa-ticket-alt"></i> 優惠券管理
-            </router-link>
-          </li>
-          <li class="nav-item border-top pt-2 small">
-            <a
-              href="/"
-              target="_blank"
-              class="nav-link text-muted"
-              @click.prevent="closeMenu"
-            >
-              查看前台 <i class="fas fa-external-link"></i>
-            </a>
-          </li>
-        </ul>
       </div>
     </nav>
   </Transition>
@@ -93,6 +102,45 @@ export default {
   methods: {
     closeMenu() {
       this.$store.commit("toggleMenu");
+    },
+    // 登出
+    logout() {
+      const api = "https://vue-course-api.hexschool.io/logout";
+      this.axios
+        .post(api)
+        .then((res) => {
+          if (res.data.success) {
+            this.$router.push("/admin/login");
+            this.$swal({
+              icon: "success",
+              title: `${res.data.message}`,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            this.closeMenu();
+          } else {
+            this.$swal({
+              icon: "error",
+              title: `${res.data.message}`,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        })
+        .catch((err) => {
+          this.$swal({
+            icon: "error",
+            title: `${err}`,
+          });
+        });
+    },
+    // 另開分頁
+    openAnother() {
+      let route = this.$router.resolve({
+        name: "Home",
+      });
+      window.open(route.href, "_blank");
+      this.closeMenu();
     },
   },
 };

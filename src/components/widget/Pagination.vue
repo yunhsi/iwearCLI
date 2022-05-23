@@ -4,7 +4,7 @@
       <li class="page-item" :class="{ disable: !pagination.has_pre }">
         <a
           class="page-link"
-          href="#"
+          href="javascript:;"
           aria-label="Previous"
           @click="emitGetProduct(pagination.current_page - 1)"
         >
@@ -17,16 +17,19 @@
         :key="page"
         :class="{ active: pagination.current_page === page }"
       >
-        <a class="page-link" href="#" @click="emitGetProduct(page)">{{
-          page
-        }}</a>
+        <a
+          class="page-link"
+          href="javascript:;"
+          @click="emitGetProduct(page)"
+          >{{ page }}</a
+        >
       </li>
       <li
         class="page-item"
         :class="{ disable: !pagination.has_next }"
         @click="emitGetProduct(pagination.current_page + 1)"
       >
-        <a class="page-link" href="#" aria-label="Next">
+        <a class="page-link" href="javascript:;" aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>
