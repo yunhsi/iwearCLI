@@ -27,8 +27,8 @@
         </button>
 
         <!-- logo -->
-        <router-link to="/" class="navbar-brand"
-          ><i class="fa-solid fa-glasses pe-2"></i>!wear
+        <router-link to="/" class="navbar-brand">
+          <i class="fa-solid fa-glasses pe-2"></i>!wear
         </router-link>
       </div>
 

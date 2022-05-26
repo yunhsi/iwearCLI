@@ -43,6 +43,7 @@ export default {
   methods: {
     emitGetProduct(page) {
       this.$emit("getList", page);
+      window.scrollTo({ top: 0, behavior: "instant" });
     },
   },
 };
