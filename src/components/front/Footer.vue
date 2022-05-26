@@ -17,18 +17,18 @@
       <!-- social media -->
       <ul class="d-flex justify-content-center list-unstyled m-0">
         <li>
-          <a href="https://github.com/yunhsi?tab=repositories" target="_blank"
-            ><i class="fa-brands fa-github"></i
+          <a href="javascript:;" target="_blank"
+            ><i class="fa-brands fa-facebook-square"></i
           ></a>
         </li>
         <li>
-          <a href="https://medium.com/@cles30102" target="_blank" class="mx-4"
-            ><i class="fa-brands fa-medium"></i
+          <a href="javascript:;" target="_blank" class="mx-4"
+            ><i class="fa-brands fa-instagram"></i
           ></a>
         </li>
         <li>
-          <a href="https://codepen.io/your-work?item_type=pen" target="_blank"
-            ><i class="fa-brands fa-codepen"></i
+          <a href="javascript:;" target="_blank"
+            ><i class="fa-brands fa-line"></i
           ></a>
         </li>
       </ul>
