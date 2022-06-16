@@ -44,6 +44,7 @@ export default {
   flex-direction: column;
   opacity: 0;
   transition: all 0.3s;
+  z-index: 10;
   cursor: pointer;
   @include pad {
     right: 30px;

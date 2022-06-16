@@ -5,9 +5,9 @@
   <Toast :breakpoints="{ '414px': { width: '100%', right: '0', left: '0' } }" />
   <!-- swiper -->
   <swiper
-    :speed="800"
+    :speed="500"
     :loop="isloop"
-    :autoplay="{ delay: 3500, disableOnInteraction: false }"
+    :autoplay="{ delay: 3000, disableOnInteraction: false }"
     :breakpoints="{
       1000: {
         slidesPerView: 3,

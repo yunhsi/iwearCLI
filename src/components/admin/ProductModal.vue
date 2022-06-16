@@ -65,22 +65,24 @@
               </div>
               <!-- 商品資訊 -->
               <div class="col-md-7 col-lg-8">
-                <div class="mb-3">
-                  <label class="form-label"
-                    >品名 <span class="text-danger">*</span>
-                  </label>
-                  <Field
-                    name="品名"
-                    type="text"
-                    class="form-control"
-                    :class="{ 'is-invalid': errors['品名'] }"
-                    placeholder="請輸入品名"
-                    rules="required"
-                    v-model="tempProduct.title"
-                  />
-                  <ErrorMessage name="品名" class="invalid-feedback" />
-                </div>
                 <div class="row">
+                  <div class="col-6">
+                    <div class="mb-3">
+                      <label class="form-label"
+                        >品名 <span class="text-danger">*</span>
+                      </label>
+                      <Field
+                        name="品名"
+                        type="text"
+                        class="form-control"
+                        :class="{ 'is-invalid': errors['品名'] }"
+                        placeholder="請輸入品名"
+                        rules="required"
+                        v-model="tempProduct.title"
+                      />
+                      <ErrorMessage name="品名" class="invalid-feedback" />
+                    </div>
+                  </div>
                   <div class="col-6">
                     <div class="mb-3">
                       <label class="form-label">分類</label>
@@ -109,8 +111,6 @@
                       </select>
                     </div>
                   </div>
-                </div>
-                <div class="row">
                   <div class="col-6">
                     <div class="mb-3">
                       <label class="form-label">材質</label>
@@ -119,6 +119,17 @@
                         <option value="鈦合金">鈦合金</option>
                         <option value="輕量樹脂">輕量樹脂</option>
                       </select>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="mb-3">
+                      <label class="form-label">原價</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        placeholder="請輸入售價"
+                        v-model="tempProduct.origin_price"
+                      />
                     </div>
                   </div>
                   <div class="col-6">
@@ -133,29 +144,29 @@
                     </div>
                   </div>
                 </div>
-                <div class="form-check">
+                <div class="form-check form-switch">
                   <input
                     class="form-check-input"
                     type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
+                    role="switch"
+                    id="flexSwitchCheckDefault1"
                     v-model="tempProduct.is_enabled"
                   />
-                  <label class="form-check-label" for="flexCheckDefault">
-                    是否啟用
-                  </label>
+                  <label class="form-check-label" for="flexSwitchCheckDefault1"
+                    >是否啟用</label
+                  >
                 </div>
-                <div class="form-check">
+                <div class="form-check form-switch">
                   <input
                     class="form-check-input"
                     type="checkbox"
-                    value=""
-                    id="flexCheckChecked"
-                    v-model="tempProduct.origin_price"
+                    role="switch"
+                    id="flexSwitchCheckDefault2"
+                    v-model="tempProduct.unit"
                   />
-                  <label class="form-check-label" for="flexCheckChecked">
-                    是否推薦
-                  </label>
+                  <label class="form-check-label" for="flexSwitchCheckDefault2"
+                    >是否推薦</label
+                  >
                 </div>
               </div>
             </div>
@@ -256,4 +267,11 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.form-switch {
+  input,
+  label {
+    cursor: pointer;
+  }
+}
+</style>

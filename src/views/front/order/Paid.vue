@@ -12,7 +12,17 @@
     <main style="padding-top: 73px; min-height: calc(100vh - 104px)">
       <div class="container pt-4 pb-5">
         <!-- 搜尋 -->
-        <div class="search-bar me-0">
+        <div class="search-bar mx-2 mx-md-0 mb-md-4">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb small">
+              <li class="breadcrumb-item">
+                <a href="#"><i class="fa-solid fa-house"></i></a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                已完成的訂單
+              </li>
+            </ol>
+          </nav>
           <div class="wrap" style="width: 300px">
             <span class="material-icons"> search </span>
             <input

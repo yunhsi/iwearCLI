@@ -8,10 +8,29 @@
   <div>
     <!-- main -->
     <main style="padding-top: 73px; min-height: calc(100vh - 104px)">
-      <div class="container pt-4 pb-5">
+      <div class="container py-5">
+        <nav aria-label="breadcrumb" class="breadcrumb-wrap">
+          <ol class="breadcrumb small">
+            <li class="breadcrumb-item">
+              <a href="#"><i class="fa-solid fa-house"></i></a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">
+              <router-link to="/products" @click.prevent="goToType('')">
+                全部商品
+              </router-link>
+            </li>
+            <li
+              class="breadcrumb-item active"
+              aria-current="page"
+              style="text-transform: capitalize"
+            >
+              {{ product.title }}
+            </li>
+          </ol>
+        </nav>
         <!-- 單一商品細節 -->
         <div
-          class="row py-5"
+          class="row pb-5 pt-3"
           data-aos="fade-zoom-in"
           data-aos-easing="ease-in-sine"
           data-aos-duration="400"
@@ -19,7 +38,28 @@
         >
           <!-- 商品圖 -->
           <div class="col-md-6 px-lg-5 d-flex align-items-end">
-            <img :src="product.image" alt="" class="rounded shadow-sm" />
+            <div class="position-relative w-100">
+              <img :src="product.image" alt="" class="rounded shadow-sm" />
+              <div class="label d-flex">
+                <span
+                  class="badge rounded-pill bg-danger shadow"
+                  v-show="product.unit"
+                  >Hot</span
+                >
+                <span
+                  class="badge rounded-pill bg-warning shadow"
+                  v-show="product.price != product.origin_price"
+                  >Sale
+                  {{
+                    parseInt(
+                      (parseInt(product.price) /
+                        parseInt(product.origin_price)) *
+                        100
+                    ) - 100
+                  }}%</span
+                >
+              </div>
+            </div>
           </div>
           <!-- 商品資訊 -->
           <div class="col-md-6 pe-lg-5 d-flex align-items-end info">
@@ -32,7 +72,7 @@
                 NTD {{ $filters.currency(product.price) }}
               </h5>
               <div class="p-2 my-3">
-                <p class="mb-2">產品規格</p>
+                <p class="mb-2">商品規格</p>
                 <ul class="list-unstyled small m-0">
                   <li>- 類型： {{ product.category }}</li>
                   <li>- 框型： {{ product.description }}</li>
@@ -195,6 +235,10 @@ export default {
           });
         });
     },
+    // 前往某框型的商品頁
+    goToType(productType) {
+      this.$store.commit("setProductType", productType);
+    },
     // 成功訊息提示
     showSuccessMsg(msg) {
       this.$toast.add({
@@ -224,10 +268,6 @@ export default {
       if (this.$route.name === "Product") {
         this.getProduct();
         this.getProducts();
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
       }
     },
   },
@@ -235,10 +275,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/scss/_grid";
+.breadcrumb-wrap {
+  padding: 10px 35px;
+  @include pad {
+    padding: 0px;
+  }
+}
 img {
   width: 100%;
   object-fit: cover;
   border: 1px solid #fff;
+}
+.label {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  span {
+    margin-left: 5px;
+    letter-spacing: 1px;
+  }
 }
 .info {
   @media screen and (max-width: 767px) {

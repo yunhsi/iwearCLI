@@ -35,9 +35,11 @@
         <tr>
           <th scope="col">品名</th>
           <th scope="col"></th>
+          <th class="text-center" scope="col">原價</th>
           <th class="text-center" scope="col">售價</th>
           <th class="text-center" scope="col">啟用</th>
           <th class="text-center" scope="col">推薦</th>
+          <th class="text-center" scope="col">特價</th>
           <th class="text-center" scope="col"></th>
         </tr>
       </thead>
@@ -53,6 +55,9 @@
             />
           </th>
           <td>{{ item.title }}</td>
+          <td class="text-center">
+            ${{ $filters.currency(item.origin_price) }}
+          </td>
           <td class="text-center">${{ $filters.currency(item.price) }}</td>
           <td class="text-center">
             <span v-if="item.is_enabled" class="text-success material-icons"
@@ -61,7 +66,15 @@
             <span v-else></span>
           </td>
           <td class="text-center">
-            <span v-if="item.origin_price" class="text-warning material-icons"
+            <span v-if="item.unit" class="text-primary material-icons"
+              >check_circle</span
+            >
+            <span v-else></span>
+          </td>
+          <td class="text-center">
+            <span
+              v-if="item.origin_price != item.price"
+              class="text-warning material-icons"
               >check_circle</span
             >
             <span v-else></span>
@@ -124,7 +137,6 @@ export default {
     return {
       isLoading: false,
       products: [],
-      allProducts: [],
       pagination: {},
       isNew: false,
       bodyTag: document.querySelector("body"),
@@ -148,7 +160,7 @@ export default {
     };
   },
   computed: {
-    // 篩選產品名稱
+    // 篩選商品名稱
     filterKeyword() {
       if (this.keyword) {
         // 若有做篩選
@@ -160,13 +172,13 @@ export default {
         // 判斷是否有排序
         if (this.sortType) {
           data.sort((t1, t2) => {
-            // 若有排序
+            // 且有排序
             return this.sortType == 1
               ? t2.price - t1.price
               : t1.price - t2.price;
           });
         }
-        // 若沒排序
+        // 且沒排序
         return data;
       } else {
         // 若沒做篩選
@@ -174,20 +186,19 @@ export default {
         // 判斷是否有排序
         if (this.sortType) {
           data.sort((t1, t2) => {
-            // 若有排序
+            // 且有排序
             return this.sortType == 1
               ? t2.price - t1.price
               : t1.price - t2.price;
           });
         }
-        // 若沒排序
+        // 且沒排序
         return data;
       }
     },
   },
   mounted() {
     this.getProducts();
-    this.getAllProducts();
   },
   methods: {
     // 點開商品 modal
@@ -220,23 +231,6 @@ export default {
             this.isLoading = false;
             this.products = res.data.products;
             this.pagination = res.data.pagination;
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
-        });
-    },
-    // 取得全部商品列表
-    getAllProducts() {
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/admin/products/all`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.allProducts = res.data.products;
           }
         })
         .catch((err) => {

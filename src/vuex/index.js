@@ -6,8 +6,8 @@ export default createStore({
     isMenuOpen: false,
     // 通知 navbar 加入購物車
     isAddToCart: false,
-    // 前往某框型的商品頁
-    frameType: {},
+    // 前往某類型的商品頁
+    productType: "",
   },
   mutations: {
     toggleMenu(state) {
@@ -16,8 +16,8 @@ export default createStore({
     addToCart(state) {
       state.isAddToCart = !state.isAddToCart;
     },
-    setFrameType(state, value) {
-      state.frameType = value;
+    setProductType(state, value) {
+      state.productType = value;
     },
   },
   actions: {},

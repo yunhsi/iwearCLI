@@ -6,9 +6,9 @@
   <!-- banner -->
   <Banner />
   <!-- 熱門推薦 -->
-  <section class="container my-4">
+  <section class="container">
     <!-- 標題 -->
-    <Title tw="熱銷商品" en="Recommendation" rootClass="text-center" />
+    <Title tw="熱門推薦" en="Recommendation" rootClass="text-center" />
     <!-- 商品輪播 -->
     <ProductCarousel :products="recommendation" :isloop="true" />
     <!-- 按鈕 -->
@@ -21,9 +21,34 @@
       <router-link
         to="/products"
         class="btn btn-outline-danger hvr-icon-forward"
+        @click.prevent="goToType('Hot')"
       >
         View More
-        <i class="fa fa-chevron-circle-right hvr-icon"></i>
+        <i class="fa fa-chevron-circle-right hvr-icon ps-1"></i>
+      </router-link>
+    </div>
+  </section>
+  <hr />
+  <!-- 優惠活動 -->
+  <section class="container">
+    <!-- 標題 -->
+    <Title tw="優惠活動" en="On Sale" rootClass="text-center" />
+    <!-- 商品輪播 -->
+    <ProductCarousel :products="saleProducts" :isloop="true" />
+    <!-- 按鈕 -->
+    <div
+      class="d-flex justify-content-end me-4"
+      data-aos="fade-up"
+      data-aos-duration="1000"
+      data-aos-delay="600"
+    >
+      <router-link
+        to="/products"
+        class="btn btn-outline-danger hvr-icon-forward"
+        @click.prevent="goToType('Sale')"
+      >
+        View More
+        <i class="fa fa-chevron-circle-right hvr-icon ps-1"></i>
       </router-link>
     </div>
   </section>
@@ -32,18 +57,36 @@
     <div class="container py-3">
       <div class="row align-items-center">
         <!-- 標題 -->
-        <div class="col-lg-3">
+        <div
+          class="col-lg-3 d-md-flex align-items-center justify-content-between d-lg-block"
+        >
           <Title tw="框型簡介" en="Types Of Frames" rootClass="rwd" />
+          <!-- 按鈕 -->
+          <div
+            class="d-flex justify-content-center justify-content-md-start me-md-2 mt-lg-4"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            data-aos-delay="600"
+          >
+            <router-link
+              to="/products"
+              @click.prevent="goToType('')"
+              class="btn btn-outline-danger hvr-icon-forward"
+            >
+              View All
+              <i class="fa fa-chevron-circle-right hvr-icon ps-1"></i>
+            </router-link>
+          </div>
         </div>
         <!-- 框型 -->
         <div class="col-lg-9">
           <div class="row">
             <!-- 圓 -->
             <div class="col-6 col-md-3">
-              <a
-                href="javascript:;"
+              <router-link
+                to="/products"
                 class="hvr-float-shadow text-dark"
-                @click="goToType('round')"
+                @click.prevent="goToType('Round')"
               >
                 <div
                   class="card shadow"
@@ -61,14 +104,14 @@
                     清新柔和風格
                   </small>
                 </div>
-              </a>
+              </router-link>
             </div>
             <!-- 方 -->
             <div class="col-6 col-md-3">
-              <a
-                href="javascript:;"
+              <router-link
+                to="/products"
                 class="hvr-float-shadow text-dark"
-                @click="goToType('square')"
+                @click.prevent="goToType('Square')"
               >
                 <div
                   class="card shadow"
@@ -86,14 +129,14 @@
                     簡潔俐落風格
                   </small>
                 </div>
-              </a>
+              </router-link>
             </div>
             <!-- 波 -->
             <div class="col-6 col-md-3">
-              <a
-                href="javascript:;"
+              <router-link
+                to="/products"
                 class="hvr-float-shadow text-dark"
-                @click="goToType('boston')"
+                @click.prevent="goToType('Boston')"
               >
                 <div
                   class="card shadow"
@@ -111,14 +154,14 @@
                     流行時尚風格
                   </small>
                 </div>
-              </a>
+              </router-link>
             </div>
             <!-- 威 -->
             <div class="col-6 col-md-3">
-              <a
-                href="javascript:;"
+              <router-link
+                to="/products"
                 class="hvr-float-shadow text-dark"
-                @click="goToType('wellington')"
+                @click.prevent="goToType('Wellington')"
               >
                 <div
                   class="card shadow"
@@ -136,7 +179,7 @@
                     經典風格
                   </small>
                 </div>
-              </a>
+              </router-link>
             </div>
           </div>
         </div>
@@ -159,7 +202,7 @@
             alt=""
           />
           <div class="media-body">
-            <p>所有鏡框<br />英國設計</p>
+            <p>所有鏡框<br />日本設計</p>
           </div>
         </div>
       </div>
@@ -318,7 +361,13 @@ export default {
     // 取得推薦商品
     recommendation() {
       return this.products.filter((item) => {
-        return item.origin_price == true;
+        return item.unit == true;
+      });
+    },
+    // 取得優惠商品
+    saleProducts() {
+      return this.products.filter((item) => {
+        return item.price != item.origin_price;
       });
     },
   },
@@ -346,12 +395,8 @@ export default {
         });
     },
     // 前往某框型的商品頁
-    goToType(frameType) {
-      this.$store.commit("setFrameType", {
-        type: frameType,
-        isChange: true,
-      });
-      this.$router.push("/products");
+    goToType(productType) {
+      this.$store.commit("setProductType", productType);
     },
   },
 };

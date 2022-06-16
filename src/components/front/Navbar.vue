@@ -10,7 +10,7 @@
     data-aos-easing="ease-in-sine"
     data-aos-duration="400"
   >
-    <div class="container">
+    <div class="container ps-2">
       <div class="d-flex align-items-center">
         <!-- mobile menu button -->
         <button
@@ -154,7 +154,7 @@
             aria-expanded="false"
           >
             <!-- 訂單 icon -->
-            <span class="material-icons"> receipt_long </span>
+            <span class="material-icons"> content_paste_search </span>
             <!-- 訂單數量 -->
             <Transition name="fade">
               <span class="num bg-danger" v-show="unpaid.length">!</span>
@@ -191,13 +191,90 @@
       </ul>
 
       <!-- menu -->
-      <div class="collapse navbar-collapse px-2" id="navbarNavDropdown">
-        <ul class="navbar-nav">
+      <div
+        class="collapse navbar-collapse px-2"
+        id="navbarNavDropdown"
+        ref="menu"
+      >
+        <ul class="navbar-nav position-relative small" style="top: 5px">
           <li class="nav-item">
-            <router-link to="/" class="nav-link">Home</router-link>
+            <router-link to="/" class="nav-link">首頁</router-link>
+          </li>
+          <li class="nav-item products-dropdown">
+            <div class="nav-link" :class="{ active: productsActive }">
+              商品分類
+            </div>
+            <div class="pt-2">
+              <ul
+                class="list-unstyled ms-2 py-1 border border-danger rounded shadow-sm"
+              >
+                <li>
+                  <router-link to="/products" @click.prevent="goToType('Hot')"
+                    >熱門推薦</router-link
+                  >
+                </li>
+                <li>
+                  <router-link to="/products" @click.prevent="goToType('Sale')"
+                    >優惠活動</router-link
+                  >
+                </li>
+                <hr class="my-1" />
+                <li>
+                  <router-link to="/products" @click.prevent="goToType('')"
+                    >全部商品</router-link
+                  >
+                </li>
+                <li>
+                  <router-link
+                    to="/products"
+                    @click.prevent="goToType('Round')"
+                    class="d-flex justify-content-between"
+                  >
+                    <div>圓框款</div>
+                    <img
+                      src="https://jp.owndays.com/images/frame-types/round.svg"
+                    />
+                  </router-link>
+                </li>
+                <li>
+                  <router-link
+                    to="/products"
+                    @click.prevent="goToType('Square')"
+                    class="d-flex justify-content-between"
+                  >
+                    <div>方型款</div>
+                    <img
+                      src="https://jp.owndays.com/images/frame-types/square.svg"
+                    />
+                  </router-link>
+                </li>
+                <li>
+                  <router-link
+                    to="/products"
+                    @click.prevent="goToType('Boston')"
+                    class="d-flex justify-content-between"
+                  >
+                    <div>波士頓</div>
+                    <img
+                      src="https://jp.owndays.com/images/frame-types/boston.svg"
+                  /></router-link>
+                </li>
+                <li>
+                  <router-link
+                    to="/products"
+                    @click.prevent="goToType('Wellington')"
+                    class="d-flex justify-content-between"
+                  >
+                    <div>威靈頓</div>
+                    <img
+                      src="https://jp.owndays.com/images/frame-types/wellington.svg"
+                  /></router-link>
+                </li>
+              </ul>
+            </div>
           </li>
           <li class="nav-item">
-            <router-link to="/products" class="nav-link">Products</router-link>
+            <router-link to="/notes" class="nav-link">購物說明</router-link>
           </li>
         </ul>
       </div>
@@ -216,6 +293,7 @@ export default {
       num: 0,
       cartActive: false,
       orderActive: false,
+      productsActive: false,
       unpaid: [],
     };
   },
@@ -252,6 +330,8 @@ export default {
         this.cartActive = true;
       } else if (this.$route.name === "Unpaid" || this.$route.name === "Paid") {
         this.orderActive = true;
+      } else if (this.$route.name === "Products") {
+        this.productsActive = true;
       }
     },
     // 取得購物車列表
@@ -318,6 +398,11 @@ export default {
           });
         });
     },
+    // 前往某框型的商品頁
+    goToType(productType) {
+      this.$store.commit("setProductType", productType);
+      this.$refs.menu.classList.remove("show");
+    },
     // 成功訊息提示
     showSuccessMsg(msg) {
       this.$toast.add({
@@ -354,7 +439,7 @@ export default {
 @import "@/assets/scss/_grid";
 .navbar {
   background-color: transparent;
-  padding: 15px 0;
+  padding: 14px 0;
   .nav-item {
     margin-right: 20px;
     @include phone {
@@ -369,6 +454,9 @@ export default {
   }
   .router-link-active {
     color: #fff;
+  }
+  .active {
+    color: #000 !important;
   }
   .dropdown {
     .show {
@@ -386,17 +474,58 @@ export default {
     .active {
       color: #000;
     }
+    .dropdown-toggle::after {
+      display: none;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 40px;
+      img {
+        max-width: 60px;
+        object-fit: cover;
+        object-position: center;
+      }
+    }
   }
-  .dropdown-toggle::after {
-    display: none;
-  }
-  .dropdown-menu {
-    position: absolute;
-    top: 40px;
-    img {
-      max-width: 60px;
-      object-fit: cover;
-      object-position: center;
+  .products-dropdown {
+    .nav-link {
+      cursor: pointer;
+    }
+    &:hover {
+      ul {
+        opacity: 1;
+        pointer-events: visible;
+      }
+    }
+    ul {
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+      position: absolute;
+      background: #fff;
+      width: 150px;
+      @media screen and (max-width: 767px) {
+        position: static;
+        margin: 0 !important;
+        width: 100% !important;
+        opacity: 1;
+      }
+      li {
+        transition: all 0.3s;
+        letter-spacing: 1px;
+        &:hover {
+          background: #f5f5f5;
+        }
+        a {
+          padding: 7px 14px;
+          color: #000;
+          display: block;
+          img {
+            width: 50px;
+          }
+        }
+      }
     }
   }
   .num {

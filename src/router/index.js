@@ -24,6 +24,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "front-main" */ "@/views/front/Product.vue"),
   },
+  {
+    path: "/notes",
+    name: "Notes",
+    component: () =>
+      import(/* webpackChunkName: "front-main" */ "@/views/front/Notes.vue"),
+  },
   // 購物車結帳
   {
     path: "/cart",
