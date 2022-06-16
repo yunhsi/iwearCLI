@@ -111,12 +111,33 @@ html {
   transform: translateX(-100%);
 }
 
+.breadcrumb {
+  margin: 0;
+  letter-spacing: 1px;
+
+  @include pad {
+    margin-bottom: 15px;
+  }
+  .breadcrumb-item {
+    a {
+      color: #000;
+    }
+  }
+  .active {
+    color: #6c757d;
+  }
+}
+
 .search-bar {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-bottom: 15px;
-  margin-right: 20px;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 10px 20px;
+  @include pad {
+    flex-direction: column;
+    align-items: start;
+  }
+
   .wrap {
     position: relative;
     width: 180px;
@@ -152,8 +173,27 @@ html {
     select {
       border: none;
       border-bottom: 1px solid #aaa;
-      padding: 0.25rem 0;
+      padding: 5px 0;
       padding-left: 40px;
+    }
+  }
+}
+
+.accordion {
+  line-height: 1.8;
+  font-size: 14px;
+  li {
+    padding-bottom: 5px;
+  }
+  .accordion-header {
+    .accordion-button {
+      font-weight: bold;
+      border-bottom: 1px solid #ddd;
+    }
+    .accordion-button:not(.collapsed) {
+      color: #000;
+      background: #fff;
+      box-shadow: none;
     }
   }
 }

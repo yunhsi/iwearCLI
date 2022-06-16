@@ -9,8 +9,8 @@
         <!-- 後台登入 -->
         <small class="d-block py-1"
           >僅做為學習使用，非商業用途. ｜
-          <router-link to="/admin/login" class="small"
-            >登入後台</router-link
+          <a href="javascript:;" class="small" @click.prevent="openAnother"
+            >登入後台</a
           ></small
         >
       </p>
@@ -37,7 +37,17 @@
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    // 另開分頁
+    openAnother() {
+      let route = this.$router.resolve({
+        name: "Login",
+      });
+      window.open(route.href, "_blank");
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

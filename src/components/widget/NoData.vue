@@ -30,7 +30,7 @@ export default {
   color: rgba(0, 0, 0, 0.75);
   pointer-events: none;
   h2 {
-    font-size: 100px;
+    font-size: 80px;
   }
   p {
     font-size: 30px;

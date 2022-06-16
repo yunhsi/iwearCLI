@@ -1,10 +1,29 @@
 <template>
   <div class="card text-center hvr-float d-block">
     <router-link :to="`/product/${product.id}`">
-      <!-- 產品圖片 -->
-      <img :src="product.image" alt="" />
-      <!-- 產品資訊 -->
-      <div class="p-3 pb-2">
+      <div class="card-top">
+        <!-- 商品圖片 -->
+        <img :src="product.image" alt="" />
+        <div class="label d-flex">
+          <span
+            class="badge rounded-pill bg-danger shadow"
+            v-show="product.unit"
+            >Hot</span
+          >
+          <span
+            class="badge rounded-pill bg-warning shadow"
+            v-show="product.price != product.origin_price"
+            >Sale
+            {{
+              parseInt(
+                (parseInt(product.price) / parseInt(product.origin_price)) * 100
+              ) - 100
+            }}%</span
+          >
+        </div>
+      </div>
+      <!-- 商品資訊 -->
+      <div class="px-2 px-md-3 pb-2 pt-3 pt-xl-2">
         <p class="fw-light">{{ product.title }}</p>
         <h6 class="fw-bolder">NTD {{ $filters.currency(product.price) }}</h6>
       </div>
@@ -64,19 +83,41 @@ export default {
   box-shadow: 0 0.5rem 1rem rgba(10, 10, 10, 0.15);
   border: 1px solid #fff;
   position: relative;
+  @media screen and (max-width: 767px) {
+    margin: 20px 0;
+  }
   &:hover {
     box-shadow: 0 0.25rem 0.5rem rgba(10, 10, 10, 0.15);
   }
-  img {
-    width: 100%;
-    height: 230px;
-    object-fit: cover;
-    object-position: center;
+  .card-top {
+    position: relative;
+    img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+      object-position: center;
+    }
+    .label {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      span {
+        margin-left: 5px;
+        letter-spacing: 1px;
+      }
+    }
   }
   p {
     margin: 0;
     text-transform: capitalize;
     font-size: 15px;
+    @media screen and (max-width: 1199px) {
+      max-height: 35px;
+      height: 35px;
+      line-height: 15px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   h6 {
     margin: 0;
