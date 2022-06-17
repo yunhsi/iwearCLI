@@ -54,7 +54,10 @@
         </button>
       </div>
       <div class="d-grid gap-2" v-else>
-        <router-link to="/products" class="btn btn-danger"
+        <router-link
+          to="/products"
+          class="btn btn-danger"
+          @click.prevent="goToType('')"
           >回到商品頁</router-link
         >
       </div>
@@ -134,6 +137,10 @@ export default {
             title: `${err}`,
           });
         });
+    },
+    // 前往某框型的商品頁
+    goToType(productType) {
+      this.$store.commit("setProductType", productType);
     },
   },
 };

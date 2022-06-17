@@ -204,7 +204,7 @@
             <div class="nav-link" :class="{ active: productsActive }">
               商品分類
             </div>
-            <div class="pt-2">
+            <div class="py-2">
               <ul
                 class="list-unstyled ms-2 py-1 border border-danger rounded shadow-sm"
               >

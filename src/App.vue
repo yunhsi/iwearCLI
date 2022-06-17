@@ -132,10 +132,11 @@ html {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin: 10px 20px;
+  margin-bottom: 10px;
   @include pad {
     flex-direction: column;
     align-items: start;
+    margin: 0;
   }
 
   .wrap {

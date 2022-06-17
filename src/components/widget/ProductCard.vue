@@ -1,5 +1,5 @@
 <template>
-  <div class="card text-center hvr-float d-block">
+  <div class="card text-center hvr-float d-block" :class="rootClass">
     <router-link :to="`/product/${product.id}`">
       <div class="card-top">
         <!-- 商品圖片 -->
@@ -42,7 +42,7 @@
 
 <script>
 export default {
-  props: ["product"],
+  props: ["product", "rootClass"],
   emits: ["addToCart"],
   data() {
     return {};
@@ -83,9 +83,6 @@ export default {
   box-shadow: 0 0.5rem 1rem rgba(10, 10, 10, 0.15);
   border: 1px solid #fff;
   position: relative;
-  @media screen and (max-width: 767px) {
-    margin: 20px 0;
-  }
   &:hover {
     box-shadow: 0 0.25rem 0.5rem rgba(10, 10, 10, 0.15);
   }

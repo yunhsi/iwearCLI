@@ -71,13 +71,17 @@
         </div>
         <!-- 商品列表 -->
         <Transition v-if="isReady" name="fade">
-          <div class="row g-2" v-show="filterKeyword.length">
+          <div class="row g-2 g-md-4" v-show="filterKeyword.length">
             <div
-              class="col-6 col-lg-4 pb-3"
+              class="col-6 col-lg-4 col-xl-3 pb-3"
               v-for="(item, index) in filterKeyword"
               :key="index"
             >
-              <ProductCard :product="item" @addToCart="showMsg" />
+              <ProductCard
+                :product="item"
+                @addToCart="showMsg"
+                :rootClass="'mx-0'"
+              />
             </div>
           </div>
         </Transition>
@@ -299,10 +303,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.search-bar {
-  @media screen and (max-width: 767px) {
-    margin: 10px 5px;
-  }
-}
-</style>
+<style lang="scss" scoped></style>
