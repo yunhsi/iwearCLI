@@ -196,7 +196,7 @@
         id="navbarNavDropdown"
         ref="menu"
       >
-        <ul class="navbar-nav position-relative small" style="top: 5px">
+        <ul class="navbar-nav position-relative small" style="top: 10px">
           <li class="nav-item">
             <router-link to="/" class="nav-link">首頁</router-link>
           </li>
@@ -439,7 +439,10 @@ export default {
 @import "@/assets/scss/_grid";
 .navbar {
   background-color: transparent;
-  padding: 14px 0;
+  padding: 12px 0;
+  @include phone {
+    padding: 10px 0;
+  }
   .nav-item {
     margin-right: 20px;
     @include phone {
