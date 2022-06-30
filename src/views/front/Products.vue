@@ -52,7 +52,14 @@
                 type="search"
                 placeholder="商品名稱"
                 v-model.trim="keyword"
+                list="datalistOptions"
               />
+              <datalist id="datalistOptions">
+                <option value="Round">Round</option>
+                <option value="Square">Square</option>
+                <option value="Boston">Boston</option>
+                <option value="Wellington">Wellington</option>
+              </datalist>
             </div>
             <!-- 排序 -->
             <p class="small">
