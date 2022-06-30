@@ -67,7 +67,7 @@
                     <td class="border-0 align-middle text-center">
                       <a
                         href="javascript:;"
-                        @click="deleteCart(item.id)"
+                        @click="requestDeleteCart(item.id)"
                         class="close"
                         ><i class="fas fa-times"></i
                       ></a>
@@ -99,7 +99,7 @@
                   /><button
                     class="btn btn-secondary text-white"
                     type="button"
-                    @click="getCoupon"
+                    @click="requestPostCoupon"
                   >
                     套用優惠碼
                   </button>
@@ -141,6 +141,9 @@ import Navbar from "@/components/front/Navbar.vue";
 import CheckoutSteps from "@/components/widget/CheckoutSteps.vue";
 import Footer from "@/components/front/Footer.vue";
 import GoTop from "@/components/widget/GoTop.vue";
+
+import { getCarts, deleteCart } from "@/api/cart";
+import { postCoupon } from "@/api/coupon";
 export default {
   components: {
     Navbar,
@@ -162,59 +165,53 @@ export default {
     };
   },
   mounted() {
-    this.getCart();
+    this.requestCarts();
   },
   methods: {
     // 取得購物車列表
-    getCart() {
-      this.isLoading = true;
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/cart`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.cart = res.data.data;
-            // 取得購物車數量
-            let cartNum = 0;
-            this.cart.carts.forEach((item) => {
-              cartNum += item.qty;
-            });
-            this.num = cartNum;
-            // 若已套用優惠券，則顯示 coupon_code
-            if (this.isGetCoupon == "true") {
-              this.coupon_code = "happy99";
-            }
-            this.isLoading = false;
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
+    async requestCarts() {
+      try {
+        this.isLoading = true;
+        let res = await getCarts();
+        if (res.data.success) {
+          this.cart = res.data.data;
+          // 取得購物車數量
+          let cartNum = 0;
+          this.cart.carts.forEach((item) => {
+            cartNum += item.qty;
           });
+          this.num = cartNum;
+          // 若已套用優惠券，則顯示 coupon_code
+          if (this.isGetCoupon == "true") {
+            this.coupon_code = "happy99";
+          }
+        }
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
     // 刪除某一購物車資料
-    deleteCart(id) {
-      this.isLoading = true;
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/cart/${id}`;
-      this.axios
-        .delete(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.getCart();
-            this.showSuccessMsg(res.data.message);
-            // 重新觸發 navbar 的購物車列表
-            this.$store.commit("addToCart");
-            this.isLoading = false;
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
+    async requestDeleteCart(id) {
+      try {
+        this.isLoading = true;
+        let res = await deleteCart(id);
+        if (res.data.success) {
+          this.requestCarts();
+          this.showSuccessMsg(res.data.message);
+          // 重新觸發 navbar 的購物車列表
+          this.$store.commit("addToCart");
+        }
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
     // 成功訊息提示
     showSuccessMsg(msg) {
@@ -239,31 +236,28 @@ export default {
       this.$toast.removeAllGroups();
     },
     // 取得優惠券
-    getCoupon() {
-      this.isLoading = true;
+    async requestPostCoupon() {
       const coupon = {
         code: this.coupon_code,
       };
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/coupon`;
-      this.axios
-        .post(api, { data: { coupon } })
-        .then((res) => {
-          if (res.data.success && this.coupon_code == "happy99") {
-            localStorage.setItem("isGetCoupon", true);
-            this.getCart();
-            this.showSuccessMsg("已套用優惠券");
-            this.isLoading = false;
-          } else {
-            this.showErrorMsg("找不到優惠券");
-            this.isLoading = false;
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
+      try {
+        this.isLoading = true;
+        let res = await postCoupon({ coupon });
+        if (res.data.success && this.coupon_code == "happy99") {
+          localStorage.setItem("isGetCoupon", true);
+          this.requestCarts();
+          this.showSuccessMsg("已套用優惠券");
+          this.isLoading = false;
+        } else {
+          this.showErrorMsg("找不到優惠券");
+          this.isLoading = false;
+        }
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
     // 前往結帳
     toNextStep() {

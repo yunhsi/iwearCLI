@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import { postPay } from "@/api/pay";
 export default {
   props: {
     id: {
@@ -114,29 +115,25 @@ export default {
       });
     },
     // 結帳
-    checkout() {
-      this.isLoading = true;
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/pay/${this.id}`;
-      this.axios
-        .post(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.isLoading = false;
-            this.$swal({
-              icon: "success",
-              title: `${res.data.message}`,
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            this.$router.push(`/checkout/${this.id}`);
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
+    async checkout() {
+      try {
+        this.isLoading = true;
+        let res = await postPay(this.id);
+        this.isLoading = false;
+        this.$swal({
+          icon: "success",
+          title: `${res.data.message}`,
+          showConfirmButton: false,
+          timer: 1500,
         });
+        this.$router.push(`/checkout/${this.id}`);
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
+        });
+      }
     },
     // 前往某框型的商品頁
     goToType(productType) {

@@ -342,6 +342,8 @@ import Title from "@/components/widget/Title.vue";
 import ProductCarousel from "@/components/widget/ProductCarousel.vue";
 import Footer from "@/components/front/Footer.vue";
 import GoTop from "@/components/widget/GoTop.vue";
+
+import { getAllProducts } from "@/api/product";
 export default {
   components: {
     Navbar,
@@ -372,27 +374,24 @@ export default {
     },
   },
   mounted() {
-    this.getProducts();
+    this.requestProducts();
   },
   methods: {
-    // 取得全部商品
-    getProducts() {
-      this.isLoading = true;
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/products/all`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.products = res.data.products;
-          }
-          this.isLoading = false;
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
+    async requestProducts() {
+      try {
+        this.isLoading = true;
+        // 取得全部商品
+        let res = await getAllProducts();
+        if (res.data.success) {
+          this.products = res.data.products;
+        }
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
     // 前往某框型的商品頁
     goToType(productType) {

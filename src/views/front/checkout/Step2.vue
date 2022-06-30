@@ -25,7 +25,7 @@
             <Form
               v-slot="{ errors }"
               class="row g-3 pt-4 pt-md-0 small"
-              @submit="createOrder"
+              @submit="requestPostOrder"
             >
               <div class="col-md-6">
                 <label for="name" class="form-label">
@@ -141,6 +141,9 @@ import CheckoutSteps from "@/components/widget/CheckoutSteps.vue";
 import OrderInfo from "@/components/widget/OrderInfo.vue";
 import Footer from "@/components/front/Footer.vue";
 import GoTop from "@/components/widget/GoTop.vue";
+
+import { getCarts } from "@/api/cart";
+import { postOrder } from "@/api/order";
 export default {
   components: {
     Navbar,
@@ -166,48 +169,45 @@ export default {
     };
   },
   mounted() {
-    this.getCart();
+    this.requestCarts();
   },
   methods: {
     // 建立訂單
-    createOrder() {
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/order`;
-      this.axios
-        .post(api, { data: this.formData })
-        .then((res) => {
-          if (res.data.success) {
-            this.$router.push(`/order/${res.data.orderId}`);
-            localStorage.setItem("isGetCoupon", false);
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
+    async requestPostOrder() {
+      let data = this.formData;
+      try {
+        this.isLoading = true;
+        let res = await postOrder(data);
+        if (res.data.success) {
+          this.$router.push(`/order/${res.data.orderId}`);
+          localStorage.setItem("isGetCoupon", false);
+        }
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
     // 取得購物車列表
-    getCart() {
-      this.isLoading = true;
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/cart`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.cart = res.data.data;
-            if (!this.cart.carts.length) {
-              this.$router.push("/cart");
-            }
-            this.isLoading = false;
+    async requestCarts() {
+      try {
+        this.isLoading = true;
+        let res = await getCarts();
+        if (res.data.success) {
+          this.cart = res.data.data;
+          if (!this.cart.carts.length) {
+            this.$router.push("/cart");
           }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
+        }
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
   },
 };

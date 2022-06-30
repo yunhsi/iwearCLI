@@ -65,11 +65,20 @@
           <div class="col-md-6 pe-lg-5 d-flex align-items-end info">
             <div class="w-100">
               <small class="text-muted fw-light">{{ product.id }}</small>
-              <h4 class="fw-light py-1">
+              <h4 class="fw-normal py-1">
                 {{ product.title }}
               </h4>
-              <h5 class="border-bottom border-danger pb-3 fw-bolder">
+              <h5
+                class="border-bottom border-danger pb-3 fw-bolder"
+                v-if="product.price == product.origin_price"
+              >
                 NTD {{ $filters.currency(product.price) }}
+              </h5>
+              <h5
+                class="border-bottom border-danger pb-3 fw-bolder text-danger"
+                v-else
+              >
+                優惠價：NTD {{ $filters.currency(product.price) }}
               </h5>
               <div class="p-2 my-3">
                 <p class="mb-2">商品規格</p>
@@ -108,7 +117,7 @@
         <hr />
         <!-- 同類型輪播 -->
         <div class="container my-5">
-          <h3 class="px-3 pt-4 fw-normal">相關商品</h3>
+          <h3 class="px-3 pt-4" style="letter-spacing: 1px">你可能也喜歡</h3>
           <ProductCarousel :products="recommendation" :isloop="false" />
         </div>
       </div>
@@ -126,6 +135,9 @@ import Counter from "@/components/widget/Counter.vue";
 import ProductCarousel from "@/components/widget/ProductCarousel.vue";
 import Footer from "@/components/front/Footer.vue";
 import GoTop from "@/components/widget/GoTop.vue";
+
+import { getProduct, getAllProducts } from "@/api/product";
+import { postCart } from "@/api/cart";
 export default {
   components: {
     Navbar,
@@ -160,45 +172,30 @@ export default {
     },
   },
   mounted() {
-    this.getProduct();
-    this.getProducts();
+    this.requestProducts();
   },
   methods: {
-    // 取得單一商品細節
-    getProduct() {
-      this.isLoading = true;
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/product/${this.id}`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.product = res.data.product;
-            this.isLoading = false;
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
+    async requestProducts() {
+      let id = this.id;
+      try {
+        this.isLoading = true;
+        // 取得全部商品
+        let apiAllProducts = await getAllProducts();
+        if (apiAllProducts.data.success) {
+          this.products = apiAllProducts.data.products;
+        }
+        // 取得單一商品細節
+        let apiProduct = await getProduct(id);
+        if (apiProduct.data.success) {
+          this.product = apiProduct.data.product;
+        }
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
-    },
-    // 取得全部商品
-    getProducts() {
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/products/all`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.products = res.data.products;
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
-        });
+      }
     },
     // 減少商品數量
     reduceCount(count) {
@@ -211,29 +208,24 @@ export default {
       this.count = this.count + 1;
     },
     // 加入購物車
-    addToCart(id, qty = 1) {
-      this.isLoading = true;
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/cart`;
+    async addToCart(id, qty = 1) {
       const cart = {
         product_id: id,
         qty,
       };
-      this.axios
-        .post(api, { data: cart })
-        .then((res) => {
-          if (res.data.success) {
-            this.isLoading = false;
-            this.showSuccessMsg(res.data.message);
-            // 重新觸發 navbar 的購物車列表
-            this.$store.commit("addToCart");
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
+      try {
+        this.isLoading = true;
+        let res = await postCart(cart);
+        this.showSuccessMsg(res.data.message);
+        // 重新觸發 navbar 的購物車列表
+        this.$store.commit("addToCart");
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
     // 前往某框型的商品頁
     goToType(productType) {
@@ -266,8 +258,7 @@ export default {
     // 若路由改變，則重新取得商品資料
     $route() {
       if (this.$route.name === "Product") {
-        this.getProduct();
-        this.getProducts();
+        this.requestProducts();
       }
     },
   },

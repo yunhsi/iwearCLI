@@ -105,7 +105,7 @@
                         <a
                           href="javascript:;"
                           class="close"
-                          @click="deleteCart(item.id)"
+                          @click="requestDeleteCart(item.id)"
                         >
                           <i class="fas fa-times"></i
                         ></a>
@@ -283,6 +283,8 @@
 </template>
 
 <script>
+import { getCarts, deleteCart } from "@/api/cart";
+import { getOrders } from "@/api/order";
 export default {
   props: ["rootClass"],
   data() {
@@ -305,9 +307,9 @@ export default {
   mounted() {
     this.navTag = document.querySelector(".navbar");
     window.addEventListener("scroll", this.handleScroll);
-    this.getCart();
+    this.requestCarts();
     this.linkActive();
-    this.getOrders();
+    this.requestGetOrders();
   },
   unmounted() {
     window.addEventListener("scroll", this.handleScroll);
@@ -335,68 +337,62 @@ export default {
       }
     },
     // 取得購物車列表
-    getCart() {
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/cart`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.cart = res.data.data;
-            // 取得購物車數量
-            let cartNum = 0;
-            this.cart.carts.forEach((item) => {
-              cartNum += item.qty;
-            });
-            this.num = cartNum;
-            //
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
+    async requestCarts() {
+      try {
+        let res = await getCarts();
+        if (res.data.success) {
+          this.cart = res.data.data;
+          // 取得購物車數量
+          let cartNum = 0;
+          this.cart.carts.forEach((item) => {
+            cartNum += item.qty;
           });
+          this.num = cartNum;
+          //
+        }
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
     // 刪除某一購物車資料
-    deleteCart(id) {
-      this.isLoading = true;
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/cart/${id}`;
-      this.axios
-        .delete(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.getCart();
-            this.showSuccessMsg(res.data.message);
-            this.isLoading = false;
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
+    async requestDeleteCart(id) {
+      try {
+        this.isLoading = true;
+        let res = await deleteCart(id);
+        if (res.data.success) {
+          this.requestCarts();
+          this.showSuccessMsg(res.data.message);
+        }
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
     // 取得訂單列表
-    getOrders(page = 1) {
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/orders?page=${page}`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            // 篩選出未結帳的訂單
-            this.unpaid = res.data.orders.filter((item) => {
-              return !item.is_paid;
-            });
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
+    async requestGetOrders() {
+      let page = 1;
+      try {
+        this.isLoading = true;
+        let res = await getOrders(page);
+        if (res.data.success) {
+          // 篩選出未結帳的訂單
+          this.unpaid = res.data.orders.filter((item) => {
+            return !item.is_paid;
           });
+        }
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
     // 前往某框型的商品頁
     goToType(productType) {
@@ -429,7 +425,7 @@ export default {
   watch: {
     // 當加入購物車時，重新取得購物車資料
     isAddToCart() {
-      this.getCart();
+      this.requestCarts();
     },
   },
 };

@@ -99,7 +99,7 @@
         <!-- 頁碼 -->
         <Pagination
           :pagination="pagination"
-          @getList="getProducts"
+          @getList="requestProducts"
           v-show="pagination.current_page && filterKeyword.length && !keyword"
         />
       </div>
@@ -119,6 +119,7 @@ import Footer from "@/components/front/Footer.vue";
 import GoTop from "@/components/widget/GoTop.vue";
 import NoData from "@/components/widget/NoData";
 
+import { getProducts, getAllProducts } from "@/api/product";
 export default {
   components: {
     Navbar,
@@ -139,8 +140,8 @@ export default {
       // 排序的選項
       sortItem: {
         0: "原順序",
-        1: "售價的高到低",
-        2: "售價的低到高",
+        1: "售價：高到低",
+        2: "售價：低到高",
       },
       // 選中的排序
       sortType: "0",
@@ -223,49 +224,33 @@ export default {
     },
   },
   mounted() {
-    this.getProducts();
-    this.getAllProducts();
+    this.requestProducts();
   },
   methods: {
-    // 取得商品列表
-    getProducts(page = 1) {
-      this.isLoading = true;
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/products?page=${page}`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.products = res.data.products.filter((item) => {
-              return item.is_enabled == true;
-            });
-            this.pagination = res.data.pagination;
-            this.keyword = this.productType;
-            this.isLoading = false;
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
+    async requestProducts(page = 1) {
+      try {
+        this.isLoading = true;
+        // 取得商品列表
+        let apiProducts = await getProducts(page);
+        if (apiProducts.data.success) {
+          this.products = apiProducts.data.products.filter((item) => {
+            return item.is_enabled == true;
           });
+          this.pagination = apiProducts.data.pagination;
+          this.keyword = this.productType;
+        }
+        // 取得全部商品列表
+        let apiAllProducts = await getAllProducts();
+        if (apiAllProducts.data.success) {
+          this.allProducts = apiAllProducts.data.products;
+        }
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
-    },
-    // 取得全部商品列表
-    getAllProducts() {
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/products/all`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.allProducts = res.data.products;
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
-        });
+      }
     },
     // 成功訊息提示
     showSuccessMsg(msg) {
@@ -304,7 +289,7 @@ export default {
       this.isReady = true;
     },
     productType() {
-      this.getProducts();
+      this.requestProducts();
     },
   },
 };

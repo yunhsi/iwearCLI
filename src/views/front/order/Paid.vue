@@ -55,7 +55,7 @@
         <!-- 頁碼 -->
         <Pagination
           :pagination="pagination"
-          @getList="getOrders"
+          @getList="requestGetOrders"
           v-show="pagination.current_page && filterKeyword.length && !keyword"
         />
       </div>
@@ -74,6 +74,8 @@ import Pagination from "@/components/widget/Pagination";
 import Footer from "@/components/front/Footer.vue";
 import GoTop from "@/components/widget/GoTop.vue";
 import NoData from "@/components/widget/NoData";
+
+import { getOrders } from "@/api/order";
 export default {
   components: {
     Navbar,
@@ -117,31 +119,28 @@ export default {
     },
   },
   mounted() {
-    this.getOrders();
+    this.requestGetOrders();
   },
   methods: {
     // 取得訂單列表
-    getOrders(page = 1) {
-      this.isLoading = true;
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/orders?page=${page}`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            // 已結帳的訂單
-            this.orders = res.data.orders.filter((item) => {
-              return item.is_paid;
-            });
-            this.pagination = res.data.pagination;
-            this.isLoading = false;
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
+    async requestGetOrders(page = 1) {
+      try {
+        this.isLoading = true;
+        let res = await getOrders(page);
+        if (res.data.success) {
+          // 已結帳的訂單
+          this.orders = res.data.orders.filter((item) => {
+            return item.is_paid;
           });
+          this.pagination = res.data.pagination;
+        }
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
   },
   watch: {

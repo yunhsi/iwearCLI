@@ -41,6 +41,8 @@ import OrderInfo from "@/components/widget/OrderInfo.vue";
 import PaymentInfo from "@/components/widget/PaymentInfo.vue";
 import Footer from "@/components/front/Footer.vue";
 import GoTop from "@/components/widget/GoTop.vue";
+
+import { getOrder } from "@/api/order";
 export default {
   components: {
     Navbar,
@@ -63,27 +65,24 @@ export default {
     },
   },
   mounted() {
-    this.getOrder();
+    this.requestOrder();
   },
   methods: {
     // 取得訂單列表
-    getOrder() {
-      this.isLoading = true;
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/order/${this.id}`;
-      this.axios
-        .get(api)
-        .then((res) => {
-          if (res.data.success) {
-            this.order = res.data.order;
-            this.isLoading = false;
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
+    async requestOrder() {
+      try {
+        this.isLoading = true;
+        let res = await getOrder(this.id);
+        if (res.data.success) {
+          this.order = res.data.order;
+        }
+        this.isLoading = false;
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
   },
 };

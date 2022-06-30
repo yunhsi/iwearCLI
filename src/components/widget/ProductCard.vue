@@ -15,17 +15,27 @@
             v-show="product.price != product.origin_price"
             >Sale
             {{
-              parseInt(
-                (parseInt(product.price) / parseInt(product.origin_price)) * 100
-              ) - 100
+              Math.round(
+                (Math.round(product.price) / Math.round(product.origin_price)) *
+                  100 -
+                  100
+              )
             }}%</span
           >
         </div>
       </div>
       <!-- 商品資訊 -->
-      <div class="px-2 px-md-3 pb-2 pt-3 pt-xl-2">
-        <p class="fw-light">{{ product.title }}</p>
-        <h6 class="fw-bolder">NTD {{ $filters.currency(product.price) }}</h6>
+      <div class="px-2 pb-2 pt-3">
+        <p class="fw-bold pb-1" style="letter-spacing: 1px">
+          {{ product.title }}
+        </p>
+        <h6 class="fw-normal" v-if="product.price == product.origin_price">
+          NTD {{ $filters.currency(product.price) }}
+        </h6>
+        <h6 class="fw-normal" style="color: #dd0000" v-else>
+          優惠價：NTD
+          {{ $filters.currency(product.price) }}
+        </h6>
       </div>
     </router-link>
     <div class="d-grid gap-2 mx-3 py-2">
@@ -41,35 +51,40 @@
 </template>
 
 <script>
+import { postCart } from "@/api/cart";
 export default {
-  props: ["product", "rootClass"],
+  props: {
+    product: {
+      type: Object,
+      default: () => ({}),
+    },
+    rootClass: {
+      type: String,
+      default: "",
+    },
+  },
   emits: ["addToCart"],
   data() {
     return {};
   },
   methods: {
     // 加入購物車
-    addToCart(id, qty = 1) {
-      const api = `https://vue-course-api.hexschool.io/api/yunhsi/cart`;
+    async addToCart(id, qty = 1) {
       const cart = {
         product_id: id,
         qty,
       };
-      this.axios
-        .post(api, { data: cart })
-        .then((res) => {
-          if (res.data.success) {
-            this.$emit("addToCart", res.data.message);
-            // 重新觸發 navbar 的購物車列表
-            this.$store.commit("addToCart");
-          }
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: `${err}`,
-          });
+      try {
+        let res = await postCart(cart);
+        this.$emit("addToCart", res.data.message);
+        // 重新觸發 navbar 的購物車列表
+        this.$store.commit("addToCart");
+      } catch (err) {
+        this.$swal({
+          icon: "error",
+          title: `${err}`,
         });
+      }
     },
   },
 };

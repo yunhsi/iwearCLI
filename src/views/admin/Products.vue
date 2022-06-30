@@ -152,8 +152,8 @@ export default {
       // 排序的選項
       sortItem: {
         0: "原順序",
-        1: "售價的高到低",
-        2: "售價的低到高",
+        1: "售價：高到低",
+        2: "售價：低到高",
       },
       // 選中的排序
       sortType: "0",
@@ -258,7 +258,7 @@ export default {
       this.axios[httpMethod](api, { data: this.tempProduct })
         .then((res) => {
           if (res.data.success) {
-            this.getProducts();
+            this.requestProducts();
             setTimeout(() => {
               this.showSuccessMsg(res.data.message);
             }, 500);
@@ -319,7 +319,7 @@ export default {
         .delete(api)
         .then((res) => {
           if (res.data.success) {
-            this.getProducts();
+            this.requestProducts();
             this.showSuccessMsg(res.data.message);
           }
         })
